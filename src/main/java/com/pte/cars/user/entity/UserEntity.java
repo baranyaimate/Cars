@@ -20,6 +20,12 @@ public class UserEntity extends CoreEntity implements UserDetails {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "firstname")
+    private String firstname;
+
+    @Column(name = "lastname")
+    private String lastname;
+
     @OneToMany(fetch = FetchType.EAGER)
     private List<RoleEntity> authorities;
 
