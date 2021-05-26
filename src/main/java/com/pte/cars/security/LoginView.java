@@ -15,9 +15,9 @@ import java.util.Collections;
 @Route
 public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 
-    private LoginForm loginForm = new LoginForm();
+    private final LoginForm loginForm = new LoginForm();
 
-    public LoginView(){
+    public LoginView() {
         loginForm.setAction("login");
         add(loginForm);
     }

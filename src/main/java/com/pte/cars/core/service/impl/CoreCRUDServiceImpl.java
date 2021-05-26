@@ -11,6 +11,7 @@ public abstract class CoreCRUDServiceImpl<T extends CoreEntity> implements CoreC
 
     @Autowired
     protected EntityManager entityManager;
+
     @Override
     public void add(T entity) {
         entityManager.persist(entity);
@@ -39,5 +40,6 @@ public abstract class CoreCRUDServiceImpl<T extends CoreEntity> implements CoreC
     }
 
     protected abstract void updateCore(T persistedEntity, T entity);
+
     protected abstract Class<T> getManagedClass();
 }

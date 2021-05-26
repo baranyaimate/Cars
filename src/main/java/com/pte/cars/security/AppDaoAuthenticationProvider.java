@@ -13,7 +13,7 @@ public class AppDaoAuthenticationProvider extends DaoAuthenticationProvider {
     @Autowired
     private UserService userService;
 
-    public AppDaoAuthenticationProvider(){
+    public AppDaoAuthenticationProvider() {
         setPasswordEncoder(new BCryptPasswordEncoder());
     }
 
