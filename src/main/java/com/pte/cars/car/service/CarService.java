@@ -1,4 +1,7 @@
 package com.pte.cars.car.service;
 
-public interface CarService {
+import com.pte.cars.car.entity.CarEntity;
+import com.pte.cars.core.service.CoreCRUDService;
+
+public interface CarService extends CoreCRUDService<CarEntity> {
 }

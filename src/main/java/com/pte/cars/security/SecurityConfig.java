@@ -11,7 +11,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private static final String LOGIN_FAILURE_URL = "/login";
     private static final String LOGIN_URL = "/login";
     private static final String LOGOUT_SUCCESS_URL = "/login";
-    private static final String LOGIN_SUCCESS_URL = "/";
+    private static final String LOGIN_SUCCESS_URL = "/car";
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -24,8 +24,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 // Allow all flow internal requests.
                 .requestMatchers(SecurityUtils::isFrameworkInternalRequest).permitAll()
-                .antMatchers("/author").hasRole("ADMIN")
-                .antMatchers("/user").hasRole("ADMIN")
+                //.antMatchers("/author").hasRole("ADMIN")
+                //.antMatchers("/user").hasRole("ADMIN")
 
                 // Allow all requests by logged in users.
                 .anyRequest().authenticated()

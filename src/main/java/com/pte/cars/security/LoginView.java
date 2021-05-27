@@ -1,6 +1,7 @@
 package com.pte.cars.security;
 
 import com.vaadin.flow.component.Tag;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
@@ -13,6 +14,7 @@ import java.util.Collections;
 @Tag("sa-login-view")
 @PageTitle("Login")
 @Route
+@CssImport("style.css")
 public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 
     private final LoginForm loginForm = new LoginForm();
@@ -20,6 +22,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
     public LoginView() {
         loginForm.setAction("login");
         add(loginForm);
+        addClassName("login-container");
     }
 
     @Override
