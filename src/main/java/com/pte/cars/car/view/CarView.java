@@ -14,125 +14,180 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
+import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.binder.BeanValidationBinder;
-import com.vaadin.flow.data.binder.ValidationException;
-import com.vaadin.flow.router.BeforeEnterEvent;
-import com.vaadin.flow.router.BeforeEnterObserver;
+import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.converter.StringToIntegerConverter;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Optional;
+import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.List;
 
 @PageTitle("Cars")
 @Route(layout = MainView.class)
-public class CarView extends Div implements BeforeEnterObserver {
-
-    private final String CAR_ID = "carID";
-    private final String CAR_EDIT_ROUTE_TEMPLATE = "car/%d/edit";
+public class CarView extends Div {
 
     private Grid<CarEntity> grid = new Grid<>(CarEntity.class, false);
 
     private TextField doors;
     private TextField type;
     private TextField yearOfManufacture;
-    private ComboBox manufacturer;
+    private ComboBox<ManufacturerEntity> manufacturer;
+
+    private TextField idFilterField;
+    private TextField doorsFilterField;
+    private TextField typeFilterField;
+    private TextField yearOfManufactureFilterField;
+    private TextField manufacturerFilterField;
 
     private Button cancel = new Button("Cancel");
     private Button save = new Button("Save");
 
-    private BeanValidationBinder<CarEntity> binder;
+    private CarEntity selectedCar;
+    private Binder<CarEntity> binder;
 
-    private CarEntity carEntity;
+    @Autowired
+    private CarService carService;
+    @Autowired
+    private ManufacturerService manufacturerService;
 
-    CarService carService;
-
-    ManufacturerService manufacturerService;
-
-    public CarView(@Autowired CarService carService, @Autowired ManufacturerService manufacturerService) {
+    @PostConstruct
+    public void init() {
         addClassNames("about-view", "flex", "flex-col", "h-full");
-        this.carService = carService;
         // Create UI
         SplitLayout splitLayout = new SplitLayout();
         splitLayout.setSizeFull();
 
         createGridLayout(splitLayout);
-        createEditorLayout(splitLayout, manufacturerService);
+        createEditorLayout(splitLayout);
 
         add(splitLayout);
         // Configure Grid
-        grid.addColumn("doors").setAutoWidth(true);
-        grid.addColumn("type").setAutoWidth(true);
-        grid.addColumn("yearOfManufacture").setAutoWidth(true);
-        grid.addColumn("manufacturer").setAutoWidth(true);
-        grid.addColumn("id").setAutoWidth(true);
-
+        manufacturer.setItems(manufacturerService.getAll());
         grid.setItems(carService.getAll());
+
+        Grid.Column<CarEntity> idColumn = grid.addColumn(CarEntity::getId).setHeader("Id").setAutoWidth(true);
+        Grid.Column<CarEntity> doorsColumn = grid.addColumn(CarEntity::getDoors).setHeader("Doors").setAutoWidth(true);
+        Grid.Column<CarEntity> typeColumn = grid.addColumn(CarEntity::getType).setHeader("Type").setAutoWidth(true);
+        Grid.Column<CarEntity> yearOfManufactureColumn = grid.addColumn(CarEntity::getYearOfManufacture).setHeader("year").setAutoWidth(true);
+        Grid.Column<CarEntity> manufacturerColumn = grid.addColumn(CarEntity::getManufacturer).setHeader("Manufacturer").setAutoWidth(true);
+
+        idFilterField = new TextField();
+        doorsFilterField = new TextField();
+        typeFilterField = new TextField();
+        yearOfManufactureFilterField = new TextField();
+        manufacturerFilterField = new TextField();
+
+        idFilterField.setPlaceholder("Filter");
+        idFilterField.setSizeFull();
+        idFilterField.addValueChangeListener(event -> {
+            grid.setItems(carService.getIdFiltered(idFilterField.getValue()));
+        });
+        idFilterField.setValueChangeMode(ValueChangeMode.EAGER);
+
+        doorsFilterField.setPlaceholder("Filter");
+        doorsFilterField.setSizeFull();
+        doorsFilterField.addValueChangeListener(event -> {
+            grid.setItems(carService.getDoorsFiltered(doorsFilterField.getValue()));
+        });
+        doorsFilterField.setValueChangeMode(ValueChangeMode.EAGER);
+
+        typeFilterField.setPlaceholder("Filter");
+        typeFilterField.setSizeFull();
+        typeFilterField.addValueChangeListener(event -> {
+            grid.setItems(carService.getTypeFiltered(typeFilterField.getValue()));
+        });
+        typeFilterField.setValueChangeMode(ValueChangeMode.EAGER);
+
+        yearOfManufactureFilterField.setPlaceholder("Filter");
+        yearOfManufactureFilterField.setSizeFull();
+        yearOfManufactureFilterField.addValueChangeListener(event -> {
+            grid.setItems(carService.getYearFiltered(yearOfManufactureFilterField.getValue()));
+        });
+        yearOfManufactureFilterField.setValueChangeMode(ValueChangeMode.EAGER);
+
+        manufacturerFilterField.setPlaceholder("Filter");
+        manufacturerFilterField.setSizeFull();
+        manufacturerFilterField.addValueChangeListener(event -> {
+            grid.setItems(carService.getManufacturerFiltered(manufacturerFilterField.getValue()));
+        });
+        manufacturerFilterField.setValueChangeMode(ValueChangeMode.EAGER);
+
+        HeaderRow filterRow = grid.appendHeaderRow();
+        filterRow.getCell(idColumn).setComponent(idFilterField);
+        filterRow.getCell(doorsColumn).setComponent(doorsFilterField);
+        filterRow.getCell(typeColumn).setComponent(typeFilterField);
+        filterRow.getCell(yearOfManufactureColumn).setComponent(yearOfManufactureFilterField);
+        filterRow.getCell(manufacturerColumn).setComponent(manufacturerFilterField);
+
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.setHeightFull();
 
-        // when a row is selected or deselected, populate form
         grid.asSingleSelect().addValueChangeListener(event -> {
-           /* if (event.getValue() != null) {
-                UI.getCurrent().navigate(String.format(CAR_EDIT_ROUTE_TEMPLATE, event.getValue().getId()));
-            } else {
-                clearForm();
-                UI.getCurrent().navigate(CarView.class);
-            }*/
+            selectedCar = event.getValue();
+            binder.setBean(selectedCar);
         });
 
-        // Configure Form
-        binder = new BeanValidationBinder<>(CarEntity.class);
+        binder = new Binder<>(CarEntity.class);
+        binder.forField(doors)
+                .withConverter(new StringToIntegerConverter("Must be a number"))
+                .withValidator(door -> door >= 1, "Must be larger then 1")
+                .withValidator(door -> door <= 10, "Must be lower then 10")
+                .bind(CarEntity::getDoors, CarEntity::setDoors);
 
-        // Bind fields. This where you'd define e.g. validation rules
+        binder.forField(yearOfManufacture)
+                .withConverter(new StringToIntegerConverter("Must be a number"))
+                .withValidator(year -> year >= 1900, "Must be larger then 1900")
+                .withValidator(year -> year <= 2100, "Must be lower then 2100")
+                .bind(CarEntity::getYearOfManufacture, CarEntity::setYearOfManufacture);
 
-        //binder.bindInstanceFields(this);
+        binder.forField(type)
+                .asRequired("Type is required")
+                .bind(CarEntity::getType, CarEntity::setType);
+
+        binder.forField(manufacturer)
+                .asRequired("Manufacturer is required")
+                .bind(CarEntity::getManufacturer, CarEntity::setManufacturer);
+
+        binder.bindInstanceFields(this);
 
         cancel.addClickListener(e -> {
-            clearForm();
             refreshGrid();
         });
 
         save.addClickListener(e -> {
             try {
-                if (this.carEntity == null) {
-                    this.carEntity = new CarEntity();
+                if (this.selectedCar == null) {
+                    this.selectedCar = new CarEntity();
+                    selectedCar.setDoors(Integer.parseInt(doors.getValue()));
+                    selectedCar.setType(type.getValue());
+                    selectedCar.setYearOfManufacture(Integer.parseInt(yearOfManufacture.getValue()));
+                    selectedCar.setManufacturer(manufacturer.getValue());
+                    carService.add(selectedCar);
+                } else {
+                    carService.update(this.selectedCar);
                 }
-                binder.writeBean(this.carEntity);
+                binder.writeBean(this.selectedCar);
 
-                carService.update(this.carEntity);
-                clearForm();
                 refreshGrid();
                 Notification.show("Car details stored.");
                 UI.getCurrent().navigate(CarView.class);
-            } catch (ValidationException validationException) {
+            } catch (Exception ex) {
                 Notification.show("An exception happened while trying to store the car details.");
             }
         });
 
     }
 
-    @Override
-    public void beforeEnter(BeforeEnterEvent event) {
-        Optional<Long> carId = event.getRouteParameters().getLong(CAR_ID);
-        if (carId.isPresent()) {
-            CarEntity carEntityFromBackend = carService.findById(carId.get());
-            Notification.show(
-                    String.format("The requested car was not found, ID = %d", carId.get()), 3000,
-                    Notification.Position.BOTTOM_START);
-            // when a row is selected but the data is no longer available,
-            // refresh grid
-            refreshGrid();
-            event.forwardTo(CarView.class);
-        }
-    }
-
-    private void createEditorLayout(SplitLayout splitLayout, ManufacturerService manufacturerService) {
+    private void createEditorLayout(SplitLayout splitLayout) {
         Div editorLayoutDiv = new Div();
         editorLayoutDiv.setClassName("flex flex-col");
         editorLayoutDiv.setWidth("400px");
@@ -146,7 +201,6 @@ public class CarView extends Div implements BeforeEnterObserver {
         type = new TextField("Type");
         yearOfManufacture = new TextField("Year");
         manufacturer = new ComboBox("Manufacturer");
-        manufacturer.setItems(manufacturerService.getAll());
         Component[] fields = new Component[]{doors, type, yearOfManufacture, manufacturer};
 
         for (Component field : fields) {
@@ -179,17 +233,7 @@ public class CarView extends Div implements BeforeEnterObserver {
 
     private void refreshGrid() {
         grid.select(null);
-        grid.getDataProvider().refreshAll();
-    }
-
-    private void clearForm() {
-        populateForm(null);
-    }
-
-    private void populateForm(CarEntity value) {
-        this.carEntity = value;
-        binder.readBean(this.carEntity);
-
+        grid.setItems(carService.getAll());
     }
 
 }

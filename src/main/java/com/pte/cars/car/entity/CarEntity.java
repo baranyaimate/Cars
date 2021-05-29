@@ -53,4 +53,14 @@ public class CarEntity extends CoreEntity {
     public void setYearOfManufacture(int yearOfManufacture) {
         this.yearOfManufacture = yearOfManufacture;
     }
+
+    @Override
+    public String toString() {
+        return "CarEntity{id=" + super.getId() +
+                ", type='" + type + '\'' +
+                ", manufacturer=" + manufacturer +
+                ", doors=" + doors +
+                ", yearOfManufacture=" + yearOfManufacture +
+                '}';
+    }
 }
