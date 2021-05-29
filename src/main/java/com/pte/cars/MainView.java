@@ -6,9 +6,9 @@ import com.pte.cars.security.SecurityUtils;
 import com.pte.cars.user.view.UserView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentUtil;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.contextmenu.ContextMenu;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -70,9 +70,7 @@ public class MainView extends AppLayout implements PageConfigurator {
 
         contextMenu.setOpenOnClick(true);
         contextMenu.setTarget(avatar);
-        contextMenu.addItem("Logout").addClickListener(event -> {
-            UI.getCurrent().getPage().setLocation("/logout");
-        });
+        contextMenu.addItem("Logout").addClickListener(e -> UI.getCurrent().getPage().setLocation("/logout"));
 
         layout.add(avatar);
         return layout;
@@ -108,8 +106,8 @@ public class MainView extends AppLayout implements PageConfigurator {
 
     private Component[] createMenuItems() {
         return new Tab[]{
-            createTab("Cars", CarView.class),
-            createTab("Manufacturers", ManufacturerView.class)
+                createTab("Cars", CarView.class),
+                createTab("Manufacturers", ManufacturerView.class)
         };
     }
 

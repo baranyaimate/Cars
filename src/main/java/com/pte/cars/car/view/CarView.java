@@ -23,7 +23,6 @@ import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.converter.StringToIntegerConverter;
-import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -36,16 +35,13 @@ import javax.annotation.PostConstruct;
 public class CarView extends Div {
 
     private final Grid<CarEntity> grid = new Grid<>(CarEntity.class, false);
-
+    private final Button cancel = new Button("Cancel");
+    private final Button save = new Button("Save");
+    private final Button remove = new Button("", VaadinIcon.TRASH.create());
     private TextField doors;
     private TextField type;
     private TextField yearOfManufacture;
     private ComboBox<ManufacturerEntity> manufacturer;
-
-    private final Button cancel = new Button("Cancel");
-    private final Button save = new Button("Save");
-    private final Button remove = new Button("", VaadinIcon.TRASH.create());
-
     private CarEntity selectedCar;
     private Binder<CarEntity> binder;
 
@@ -84,41 +80,31 @@ public class CarView extends Div {
         idFilterField.setPlaceholder("Filter");
         idFilterField.setSizeFull();
         idFilterField.setClearButtonVisible(true);
-        idFilterField.addValueChangeListener(event -> {
-            grid.setItems(carService.getIdFiltered(idFilterField.getValue()));
-        });
+        idFilterField.addValueChangeListener(e -> grid.setItems(carService.getIdFiltered(idFilterField.getValue())));
         idFilterField.setValueChangeMode(ValueChangeMode.EAGER);
 
         doorsFilterField.setPlaceholder("Filter");
         doorsFilterField.setSizeFull();
         doorsFilterField.setClearButtonVisible(true);
-        doorsFilterField.addValueChangeListener(event -> {
-            grid.setItems(carService.getDoorsFiltered(doorsFilterField.getValue()));
-        });
+        doorsFilterField.addValueChangeListener(e -> grid.setItems(carService.getDoorsFiltered(doorsFilterField.getValue())));
         doorsFilterField.setValueChangeMode(ValueChangeMode.EAGER);
 
         typeFilterField.setPlaceholder("Filter");
         typeFilterField.setSizeFull();
         typeFilterField.setClearButtonVisible(true);
-        typeFilterField.addValueChangeListener(event -> {
-            grid.setItems(carService.getTypeFiltered(typeFilterField.getValue()));
-        });
+        typeFilterField.addValueChangeListener(e -> grid.setItems(carService.getTypeFiltered(typeFilterField.getValue())));
         typeFilterField.setValueChangeMode(ValueChangeMode.EAGER);
 
         yearOfManufactureFilterField.setPlaceholder("Filter");
         yearOfManufactureFilterField.setSizeFull();
         yearOfManufactureFilterField.setClearButtonVisible(true);
-        yearOfManufactureFilterField.addValueChangeListener(event -> {
-            grid.setItems(carService.getYearFiltered(yearOfManufactureFilterField.getValue()));
-        });
+        yearOfManufactureFilterField.addValueChangeListener(e -> grid.setItems(carService.getYearFiltered(yearOfManufactureFilterField.getValue())));
         yearOfManufactureFilterField.setValueChangeMode(ValueChangeMode.EAGER);
 
         manufacturerFilterField.setPlaceholder("Filter");
         manufacturerFilterField.setSizeFull();
         manufacturerFilterField.setClearButtonVisible(true);
-        manufacturerFilterField.addValueChangeListener(event -> {
-            grid.setItems(carService.getManufacturerFiltered(manufacturerFilterField.getValue()));
-        });
+        manufacturerFilterField.addValueChangeListener(e -> grid.setItems(carService.getManufacturerFiltered(manufacturerFilterField.getValue())));
         manufacturerFilterField.setValueChangeMode(ValueChangeMode.EAGER);
 
         HeaderRow filterRow = grid.appendHeaderRow();
