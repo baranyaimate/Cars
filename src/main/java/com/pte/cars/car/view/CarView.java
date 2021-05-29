@@ -18,12 +18,12 @@ import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.converter.StringToIntegerConverter;
+import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -41,12 +41,6 @@ public class CarView extends Div {
     private TextField type;
     private TextField yearOfManufacture;
     private ComboBox<ManufacturerEntity> manufacturer;
-
-    private TextField idFilterField;
-    private TextField doorsFilterField;
-    private TextField typeFilterField;
-    private TextField yearOfManufactureFilterField;
-    private TextField manufacturerFilterField;
 
     private final Button cancel = new Button("Cancel");
     private final Button save = new Button("Save");
@@ -81,14 +75,15 @@ public class CarView extends Div {
         Grid.Column<CarEntity> yearOfManufactureColumn = grid.addColumn(CarEntity::getYearOfManufacture).setHeader("Year of manufacture").setAutoWidth(true);
         Grid.Column<CarEntity> manufacturerColumn = grid.addColumn(CarEntity::getManufacturer).setHeader("Manufacturer").setAutoWidth(true);
 
-        idFilterField = new TextField();
-        doorsFilterField = new TextField();
-        typeFilterField = new TextField();
-        yearOfManufactureFilterField = new TextField();
-        manufacturerFilterField = new TextField();
+        TextField idFilterField = new TextField();
+        TextField doorsFilterField = new TextField();
+        TextField typeFilterField = new TextField();
+        TextField yearOfManufactureFilterField = new TextField();
+        TextField manufacturerFilterField = new TextField();
 
         idFilterField.setPlaceholder("Filter");
         idFilterField.setSizeFull();
+        idFilterField.setClearButtonVisible(true);
         idFilterField.addValueChangeListener(event -> {
             grid.setItems(carService.getIdFiltered(idFilterField.getValue()));
         });
@@ -96,6 +91,7 @@ public class CarView extends Div {
 
         doorsFilterField.setPlaceholder("Filter");
         doorsFilterField.setSizeFull();
+        doorsFilterField.setClearButtonVisible(true);
         doorsFilterField.addValueChangeListener(event -> {
             grid.setItems(carService.getDoorsFiltered(doorsFilterField.getValue()));
         });
@@ -103,6 +99,7 @@ public class CarView extends Div {
 
         typeFilterField.setPlaceholder("Filter");
         typeFilterField.setSizeFull();
+        typeFilterField.setClearButtonVisible(true);
         typeFilterField.addValueChangeListener(event -> {
             grid.setItems(carService.getTypeFiltered(typeFilterField.getValue()));
         });
@@ -110,6 +107,7 @@ public class CarView extends Div {
 
         yearOfManufactureFilterField.setPlaceholder("Filter");
         yearOfManufactureFilterField.setSizeFull();
+        yearOfManufactureFilterField.setClearButtonVisible(true);
         yearOfManufactureFilterField.addValueChangeListener(event -> {
             grid.setItems(carService.getYearFiltered(yearOfManufactureFilterField.getValue()));
         });
@@ -117,6 +115,7 @@ public class CarView extends Div {
 
         manufacturerFilterField.setPlaceholder("Filter");
         manufacturerFilterField.setSizeFull();
+        manufacturerFilterField.setClearButtonVisible(true);
         manufacturerFilterField.addValueChangeListener(event -> {
             grid.setItems(carService.getManufacturerFiltered(manufacturerFilterField.getValue()));
         });
@@ -140,12 +139,14 @@ public class CarView extends Div {
         binder = new Binder<>(CarEntity.class);
         binder.forField(doors)
                 .withConverter(new StringToIntegerConverter("Must be a number"))
+                .asRequired("Doors is required")
                 .withValidator(door -> door >= 1, "Must be larger then 1")
                 .withValidator(door -> door <= 10, "Must be lower then 10")
                 .bind(CarEntity::getDoors, CarEntity::setDoors);
 
         binder.forField(yearOfManufacture)
                 .withConverter(new StringToIntegerConverter("Must be a number"))
+                .asRequired("Year of manufacture is required")
                 .withValidator(year -> year >= 1900, "Must be larger then 1900")
                 .withValidator(year -> year <= 2100, "Must be lower then 2100")
                 .bind(CarEntity::getYearOfManufacture, CarEntity::setYearOfManufacture);
@@ -160,9 +161,7 @@ public class CarView extends Div {
 
         binder.bindInstanceFields(this);
 
-        cancel.addClickListener(e -> {
-            refreshGrid();
-        });
+        cancel.addClickListener(e -> refreshGrid());
 
         save.addClickListener(e -> {
             try {
@@ -212,7 +211,7 @@ public class CarView extends Div {
         doors = new TextField("Doors");
         type = new TextField("Type");
         yearOfManufacture = new TextField("Year");
-        manufacturer = new ComboBox("Manufacturer");
+        manufacturer = new ComboBox<>("Manufacturer");
         Component[] fields = new Component[]{doors, type, yearOfManufacture, manufacturer};
 
         for (Component field : fields) {

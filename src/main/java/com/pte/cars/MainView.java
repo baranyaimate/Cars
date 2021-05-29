@@ -2,11 +2,15 @@ package com.pte.cars;
 
 import com.pte.cars.car.view.CarView;
 import com.pte.cars.manufacturer.view.ManufacturerView;
+import com.pte.cars.security.SecurityUtils;
+import com.pte.cars.user.view.UserView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.avatar.Avatar;
+import com.vaadin.flow.component.contextmenu.ContextMenu;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Image;
@@ -60,7 +64,17 @@ public class MainView extends AppLayout implements PageConfigurator {
         layout.add(new DrawerToggle());
         viewTitle = new H1();
         layout.add(viewTitle);
-        layout.add(new Avatar());
+
+        Avatar avatar = new Avatar();
+        ContextMenu contextMenu = new ContextMenu();
+
+        contextMenu.setOpenOnClick(true);
+        contextMenu.setTarget(avatar);
+        contextMenu.addItem("Logout").addClickListener(event -> {
+            UI.getCurrent().getPage().setLocation("/logout");
+        });
+
+        layout.add(avatar);
         return layout;
     }
 
@@ -86,11 +100,17 @@ public class MainView extends AppLayout implements PageConfigurator {
         tabs.addThemeVariants(TabsVariant.LUMO_MINIMAL);
         tabs.setId("tabs");
         tabs.add(createMenuItems());
+        if (SecurityUtils.isAdmin()) {
+            tabs.add(createTab("Users", UserView.class));
+        }
         return tabs;
     }
 
     private Component[] createMenuItems() {
-        return new Tab[]{createTab("Cars", CarView.class), createTab("Manufacturers", ManufacturerView.class)};
+        return new Tab[]{
+            createTab("Cars", CarView.class),
+            createTab("Manufacturers", ManufacturerView.class)
+        };
     }
 
     @Override
