@@ -13,18 +13,18 @@ public class ManufacturerEntity extends CoreEntity {
     @Column(name = "name")
     private String name;
 
+    public ManufacturerEntity() {
+    }
+
+    public ManufacturerEntity(String name) {
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
-        this.name = name;
-    }
-
-    public ManufacturerEntity() {
-    }
-
-    public ManufacturerEntity(String name) {
         this.name = name;
     }
 

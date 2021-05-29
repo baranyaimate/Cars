@@ -17,7 +17,7 @@ public class MenuComponent extends HorizontalLayout {
         link.setHref("/car");
         add(link);
 
-        if(SecurityUtils.isAdmin()){
+        if (SecurityUtils.isAdmin()) {
             /*Anchor author = new Anchor();
             author.setText("Author page");
             author.setHref("/author");

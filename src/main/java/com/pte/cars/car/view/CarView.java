@@ -16,7 +16,9 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -28,14 +30,12 @@ import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.List;
 
 @PageTitle("Cars")
 @Route(layout = MainView.class)
 public class CarView extends Div {
 
-    private Grid<CarEntity> grid = new Grid<>(CarEntity.class, false);
+    private final Grid<CarEntity> grid = new Grid<>(CarEntity.class, false);
 
     private TextField doors;
     private TextField type;
@@ -48,8 +48,9 @@ public class CarView extends Div {
     private TextField yearOfManufactureFilterField;
     private TextField manufacturerFilterField;
 
-    private Button cancel = new Button("Cancel");
-    private Button save = new Button("Save");
+    private final Button cancel = new Button("Cancel");
+    private final Button save = new Button("Save");
+    private final Button remove = new Button("", VaadinIcon.TRASH.create());
 
     private CarEntity selectedCar;
     private Binder<CarEntity> binder;
@@ -77,7 +78,7 @@ public class CarView extends Div {
         Grid.Column<CarEntity> idColumn = grid.addColumn(CarEntity::getId).setHeader("Id").setAutoWidth(true);
         Grid.Column<CarEntity> doorsColumn = grid.addColumn(CarEntity::getDoors).setHeader("Doors").setAutoWidth(true);
         Grid.Column<CarEntity> typeColumn = grid.addColumn(CarEntity::getType).setHeader("Type").setAutoWidth(true);
-        Grid.Column<CarEntity> yearOfManufactureColumn = grid.addColumn(CarEntity::getYearOfManufacture).setHeader("year").setAutoWidth(true);
+        Grid.Column<CarEntity> yearOfManufactureColumn = grid.addColumn(CarEntity::getYearOfManufacture).setHeader("Year of manufacture").setAutoWidth(true);
         Grid.Column<CarEntity> manufacturerColumn = grid.addColumn(CarEntity::getManufacturer).setHeader("Manufacturer").setAutoWidth(true);
 
         idFilterField = new TextField();
@@ -185,6 +186,17 @@ public class CarView extends Div {
             }
         });
 
+        remove.addClickListener(e -> {
+            try {
+                carService.remove(this.selectedCar);
+                refreshGrid();
+                Notification.show("Car details deleted.");
+                UI.getCurrent().navigate(CarView.class);
+            } catch (Exception ex) {
+                Notification.show("An exception happened while trying to delete the car details.");
+            }
+        });
+
     }
 
     private void createEditorLayout(SplitLayout splitLayout) {
@@ -219,7 +231,8 @@ public class CarView extends Div {
         buttonLayout.setSpacing(true);
         cancel.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        buttonLayout.add(save, cancel);
+        remove.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        buttonLayout.add(save, cancel, remove);
         editorLayoutDiv.add(buttonLayout);
     }
 

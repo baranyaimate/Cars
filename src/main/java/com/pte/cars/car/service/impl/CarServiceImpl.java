@@ -29,12 +29,12 @@ public class CarServiceImpl extends CoreCRUDServiceImpl<CarEntity> implements Ca
     }
 
     public List<CarEntity> getIdFiltered(String filter) {
-        return entityManager.createQuery("SELECT c FROM " + getManagedClass().getSimpleName() + " c WHERE CAST(c.id AS string) LIKE '%"+filter+"%'", getManagedClass())
+        return entityManager.createQuery("SELECT c FROM " + getManagedClass().getSimpleName() + " c WHERE CAST(c.id AS string) LIKE '%" + filter + "%'", getManagedClass())
                 .getResultList();
     }
 
     public List<CarEntity> getDoorsFiltered(String filter) {
-        return entityManager.createQuery("SELECT c FROM " + getManagedClass().getSimpleName() + " c WHERE CAST(c.doors AS string) LIKE '%"+filter+"%'", getManagedClass())
+        return entityManager.createQuery("SELECT c FROM " + getManagedClass().getSimpleName() + " c WHERE CAST(c.doors AS string) LIKE '%" + filter + "%'", getManagedClass())
                 .getResultList();
     }
 

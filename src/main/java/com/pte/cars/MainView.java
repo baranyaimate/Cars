@@ -38,6 +38,13 @@ public class MainView extends AppLayout implements PageConfigurator {
         addToDrawer(createDrawerContent(menu));
     }
 
+    private static Tab createTab(String text, Class<? extends Component> navigationTarget) {
+        final Tab tab = new Tab();
+        tab.add(new RouterLink(text, navigationTarget));
+        ComponentUtil.setData(tab, Class.class, navigationTarget);
+        return tab;
+    }
+
     @Override
     public void configurePage(InitialPageSettings settings) {
         settings.addFavIcon("icon", "images/car.png", "256x256");
@@ -84,13 +91,6 @@ public class MainView extends AppLayout implements PageConfigurator {
 
     private Component[] createMenuItems() {
         return new Tab[]{createTab("Cars", CarView.class), createTab("Manufacturers", ManufacturerView.class)};
-    }
-
-    private static Tab createTab(String text, Class<? extends Component> navigationTarget) {
-        final Tab tab = new Tab();
-        tab.add(new RouterLink(text, navigationTarget));
-        ComponentUtil.setData(tab, Class.class, navigationTarget);
-        return tab;
     }
 
     @Override
