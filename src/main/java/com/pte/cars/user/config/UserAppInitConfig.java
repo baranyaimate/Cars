@@ -24,10 +24,12 @@ public class UserAppInitConfig {
     private void init() {
         List<RoleEntity> roleEntities = roleService.getAll();
         RoleEntity admin = new RoleEntity();
+        RoleEntity user = new RoleEntity();
         if (roleEntities.isEmpty()) {
-            admin.setAuthority("ROLE_ADMIN");
+            admin.setAuthority("ADMIN");
             roleService.add(admin);
-
+            user.setAuthority("USER");
+            roleService.add(user);
         }
 
         List<UserEntity> userEntities = userService.getAll();

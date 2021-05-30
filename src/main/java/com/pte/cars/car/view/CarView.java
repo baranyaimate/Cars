@@ -52,15 +52,14 @@ public class CarView extends Div {
 
     @PostConstruct
     public void init() {
-        addClassNames("about-view", "flex", "flex-col", "h-full");
         // Create UI
+        addClassNames("about-view", "flex", "flex-col", "h-full");
         SplitLayout splitLayout = new SplitLayout();
         splitLayout.setSizeFull();
-
         createGridLayout(splitLayout);
         createEditorLayout(splitLayout);
-
         add(splitLayout);
+
         // Configure Grid
         manufacturer.setItems(manufacturerService.getAll());
         grid.setItems(carService.getAll());
@@ -151,17 +150,17 @@ public class CarView extends Div {
 
         save.addClickListener(e -> {
             try {
-                if (this.selectedCar == null) {
-                    this.selectedCar = new CarEntity();
+                if (selectedCar == null) {
+                    selectedCar = new CarEntity();
                     selectedCar.setDoors(Integer.parseInt(doors.getValue()));
                     selectedCar.setType(type.getValue());
                     selectedCar.setYearOfManufacture(Integer.parseInt(yearOfManufacture.getValue()));
                     selectedCar.setManufacturer(manufacturer.getValue());
                     carService.add(selectedCar);
                 } else {
-                    carService.update(this.selectedCar);
+                    carService.update(selectedCar);
                 }
-                binder.writeBean(this.selectedCar);
+                binder.writeBean(selectedCar);
 
                 refreshGrid();
                 Notification.show("Car details stored.");
@@ -173,7 +172,7 @@ public class CarView extends Div {
 
         remove.addClickListener(e -> {
             try {
-                carService.remove(this.selectedCar);
+                carService.remove(selectedCar);
                 refreshGrid();
                 Notification.show("Car details deleted.");
                 UI.getCurrent().navigate(CarView.class);

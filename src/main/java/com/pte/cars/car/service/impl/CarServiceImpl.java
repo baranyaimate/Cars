@@ -12,9 +12,6 @@ import java.util.List;
 @Service
 public class CarServiceImpl extends CoreCRUDServiceImpl<CarEntity> implements CarService {
 
-    @Autowired
-    ManufacturerService manufacturerService;
-
     @Override
     protected void updateCore(CarEntity persistedEntity, CarEntity entity) {
         persistedEntity.setType(entity.getType());

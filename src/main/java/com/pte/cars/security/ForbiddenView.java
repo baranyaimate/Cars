@@ -1,6 +1,5 @@
 package com.pte.cars.security;
 
-import com.pte.cars.menu.MenuComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -9,7 +8,6 @@ import com.vaadin.flow.router.Route;
 @Route("403")
 public class ForbiddenView extends VerticalLayout {
     public ForbiddenView() {
-        add(new MenuComponent());
         add("Access denied");
     }
 }
