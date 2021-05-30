@@ -3,8 +3,6 @@ package com.pte.cars.car.service.impl;
 import com.pte.cars.car.entity.CarEntity;
 import com.pte.cars.car.service.CarService;
 import com.pte.cars.core.service.impl.CoreCRUDServiceImpl;
-import com.pte.cars.manufacturer.service.ManufacturerService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

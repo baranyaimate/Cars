@@ -1,6 +1,5 @@
 package com.pte.cars.manufacturer.service.impl;
 
-import com.pte.cars.car.entity.CarEntity;
 import com.pte.cars.core.service.impl.CoreCRUDServiceImpl;
 import com.pte.cars.manufacturer.entity.ManufacturerEntity;
 import com.pte.cars.manufacturer.service.ManufacturerService;

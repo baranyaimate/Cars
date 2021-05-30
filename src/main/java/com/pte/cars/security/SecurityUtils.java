@@ -38,7 +38,7 @@ public class SecurityUtils {
 
     public static boolean isAdmin() {
         return isUserLoggedIn() && SecurityContextHolder.getContext().getAuthentication().
-                getAuthorities().stream().anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
+                getAuthorities().stream().anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ADMIN"));
     }
 
 }

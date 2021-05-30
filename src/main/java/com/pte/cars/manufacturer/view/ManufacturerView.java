@@ -1,9 +1,7 @@
 package com.pte.cars.manufacturer.view;
 
 import com.pte.cars.MainView;
-import com.pte.cars.car.entity.CarEntity;
 import com.pte.cars.car.service.CarService;
-import com.pte.cars.car.view.CarView;
 import com.pte.cars.manufacturer.entity.ManufacturerEntity;
 import com.pte.cars.manufacturer.service.ManufacturerService;
 import com.vaadin.flow.component.Component;
@@ -22,7 +20,6 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.converter.StringToIntegerConverter;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
