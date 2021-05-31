@@ -8,6 +8,8 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.InitialPageSettings;
+import com.vaadin.flow.server.PageConfigurator;
 
 import java.util.Collections;
 
@@ -15,7 +17,7 @@ import java.util.Collections;
 @PageTitle("Login")
 @Route
 @CssImport("style.css")
-public class LoginView extends VerticalLayout implements BeforeEnterObserver {
+public class LoginView extends VerticalLayout implements BeforeEnterObserver, PageConfigurator {
 
     private final LoginForm loginForm = new LoginForm();
 
@@ -33,5 +35,10 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
             loginForm.setError(true);
         }
         loginForm.setForgotPasswordButtonVisible(false);
+    }
+
+    @Override
+    public void configurePage(InitialPageSettings settings) {
+        settings.addFavIcon("icon", "images/car.png", "256x256");
     }
 }
