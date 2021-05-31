@@ -52,3 +52,7 @@ vaadin-tab[selected] {
     justify-content: center;
     padding-top: 7rem;
 }
+
+.text-center {
+    text-align: center;
+}

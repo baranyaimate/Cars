@@ -1,21 +1,25 @@
 package com.pte.cars.user.view;
 
 import com.pte.cars.MainView;
+import com.pte.cars.security.SecurityUtils;
 import com.pte.cars.user.entity.RoleEntity;
 import com.pte.cars.user.entity.UserEntity;
 import com.pte.cars.user.service.RoleService;
 import com.pte.cars.user.service.UserService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasStyle;
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -26,8 +30,11 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.List;
 
 @PageTitle("Users")
 @Route(layout = MainView.class)
@@ -134,10 +141,6 @@ public class UserView extends Div {
                 .asRequired("Last name is required")
                 .bind(UserEntity::getLastname, UserEntity::setLastname);
 
-        /*binder.forField(role)
-                .asRequired("Role is required")
-                .bind(UserEntity::getAuthorities, UserEntity::setAuthorities);*/
-
         binder.bindInstanceFields(this);
 
         cancel.addClickListener(e -> refreshGrid());
@@ -145,13 +148,30 @@ public class UserView extends Div {
         save.addClickListener(e -> {
             try {
                 if (selectedUser == null) {
-                    //TODO: generate password
                     selectedUser = new UserEntity();
                     selectedUser.setUsername(username.getValue());
                     selectedUser.setFirstname(firstName.getValue());
                     selectedUser.setLastname(lastName.getValue());
-                    //selectedUser.setAuthorities(role.getValue());
+
+                    String password = SecurityUtils.generatePassword();
+                    Dialog passwordDialog = new Dialog();
+
+                    passwordDialog.setWidth("400px");
+                    passwordDialog.setHeight("150px");
+                    Label text = new Label("Password: " + password);
+                    text.setWidth("100%");
+                    text.addClassName("text-center");
+                    passwordDialog.add(text);
+                    Button btn = new Button("Ok", event -> passwordDialog.close());
+                    btn.addClassNames("flex", "flex-end");
+                    passwordDialog.add(btn);
+
+                    selectedUser.setPassword(new BCryptPasswordEncoder().encode(password));
+                    List<RoleEntity> roleArray = new ArrayList<>();
+                    roleArray.add(role.getValue());
+                    selectedUser.setAuthorities(roleArray);
                     userService.add(selectedUser);
+                    passwordDialog.open();
                 } else {
                     userService.update(selectedUser);
                 }
@@ -162,6 +182,7 @@ public class UserView extends Div {
                 UI.getCurrent().navigate(UserView.class);
             } catch (Exception ex) {
                 Notification.show("An exception happened while trying to store the user details.");
+                System.err.println(ex);
             }
         });
 
