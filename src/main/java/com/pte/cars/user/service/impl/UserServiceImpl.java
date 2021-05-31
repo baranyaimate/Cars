@@ -1,6 +1,7 @@
 package com.pte.cars.user.service.impl;
 
 import com.pte.cars.core.service.impl.CoreCRUDServiceImpl;
+import com.pte.cars.manufacturer.entity.ManufacturerEntity;
 import com.pte.cars.user.entity.UserEntity;
 import com.pte.cars.user.service.UserService;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,6 +9,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.TypedQuery;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserServiceImpl extends CoreCRUDServiceImpl<UserEntity> implements UserService {
@@ -28,4 +31,31 @@ public class UserServiceImpl extends CoreCRUDServiceImpl<UserEntity> implements 
         query.setParameter("username", username);
         return query.getSingleResult();
     }
+
+    public List<UserEntity> getIdFiltered(String filter) {
+        return entityManager.createQuery("SELECT u FROM " + getManagedClass().getSimpleName() + " u WHERE CAST(u.id AS string) LIKE '%" + filter + "%'", getManagedClass())
+                .getResultList();
+    }
+
+    public List<UserEntity> getUsernameFiltered(String filter) {
+        return entityManager.createQuery("SELECT u FROM " + getManagedClass().getSimpleName() + " u WHERE UPPER(u.username) LIKE '%" + filter.toUpperCase() + "%'", getManagedClass())
+                .getResultList();
+    }
+
+    public List<UserEntity> getFirstNameFiltered(String filter) {
+        return entityManager.createQuery("SELECT u FROM " + getManagedClass().getSimpleName() + " u WHERE UPPER(u.firstname) LIKE '%" + filter.toUpperCase() + "%'", getManagedClass())
+                .getResultList();
+    }
+
+
+    public List<UserEntity> getLastNameFiltered(String filter) {
+        return entityManager.createQuery("SELECT u FROM " + getManagedClass().getSimpleName() + " u WHERE UPPER(u.lastname) LIKE '%" + filter.toUpperCase() + "%'", getManagedClass())
+                .getResultList();
+    }
+
+    public List<UserEntity> getRoleFiltered(String filter) {
+        //TODO
+        return new ArrayList<>();
+    }
+
 }

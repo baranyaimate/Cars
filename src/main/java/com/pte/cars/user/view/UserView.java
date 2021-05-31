@@ -79,33 +79,39 @@ public class UserView extends Div {
         idFilterField.setPlaceholder("Filter");
         idFilterField.setSizeFull();
         idFilterField.setClearButtonVisible(true);
-        //idFilterField.addValueChangeListener(e -> grid.setItems(carService.getIdFiltered(idFilterField.getValue())));
+        idFilterField.addValueChangeListener(e -> grid.setItems(userService.getIdFiltered(idFilterField.getValue())));
         idFilterField.setValueChangeMode(ValueChangeMode.EAGER);
 
         usernameFilterField.setPlaceholder("Filter");
         usernameFilterField.setSizeFull();
         usernameFilterField.setClearButtonVisible(true);
-        //usernameFilterField.addValueChangeListener(e -> grid.setItems(carService.getIdFiltered(idFilterField.getValue())));
+        usernameFilterField.addValueChangeListener(e -> grid.setItems(userService.getUsernameFiltered(usernameFilterField.getValue())));
         usernameFilterField.setValueChangeMode(ValueChangeMode.EAGER);
 
         firstNameFilterField.setPlaceholder("Filter");
         firstNameFilterField.setSizeFull();
         firstNameFilterField.setClearButtonVisible(true);
-        //firstNameFilterField.addValueChangeListener(e -> grid.setItems(carService.getIdFiltered(idFilterField.getValue())));
+        firstNameFilterField.addValueChangeListener(e -> grid.setItems(userService.getFirstNameFiltered(firstNameFilterField.getValue())));
         firstNameFilterField.setValueChangeMode(ValueChangeMode.EAGER);
 
         lastNameFilterField.setPlaceholder("Filter");
         lastNameFilterField.setSizeFull();
         lastNameFilterField.setClearButtonVisible(true);
-        //lastNameFilterField.addValueChangeListener(e -> grid.setItems(carService.getIdFiltered(idFilterField.getValue())));
+        lastNameFilterField.addValueChangeListener(e -> grid.setItems(userService.getLastNameFiltered(lastNameFilterField.getValue())));
         lastNameFilterField.setValueChangeMode(ValueChangeMode.EAGER);
+
+        roleFilterComboBox.setPlaceholder("Filter");
+        roleFilterComboBox.setSizeFull();
+        roleFilterComboBox.setClearButtonVisible(true);
+        roleFilterComboBox.setItems(roleService.getAll());
+        roleFilterComboBox.addValueChangeListener(e -> grid.setItems(userService.getRoleFiltered(roleFilterComboBox.getValue().toString())));
 
         HeaderRow filterRow = grid.appendHeaderRow();
         filterRow.getCell(idColumn).setComponent(idFilterField);
         filterRow.getCell(usernameColumn).setComponent(usernameFilterField);
         filterRow.getCell(firstNameColumn).setComponent(firstNameFilterField);
         filterRow.getCell(lastNameColumn).setComponent(lastNameFilterField);
-        //filterRow.getCell(manufacturerColumn).setComponent(manufacturerFilterField);
+        filterRow.getCell(roleColumn).setComponent(roleFilterComboBox);
 
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.setHeightFull();
