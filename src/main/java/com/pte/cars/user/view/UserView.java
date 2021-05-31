@@ -110,7 +110,7 @@ public class UserView extends Div {
         roleFilterComboBox.setSizeFull();
         roleFilterComboBox.setClearButtonVisible(true);
         roleFilterComboBox.setItems(roleService.getAll());
-        roleFilterComboBox.addValueChangeListener(e ->  {
+        roleFilterComboBox.addValueChangeListener(e -> {
             if (roleFilterComboBox.getValue() != null) {
                 grid.setItems(userService.getRoleFiltered(roleFilterComboBox.getValue().toString()));
             } else {
