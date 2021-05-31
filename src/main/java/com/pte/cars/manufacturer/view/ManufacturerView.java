@@ -23,6 +23,7 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
@@ -90,8 +91,6 @@ public class ManufacturerView extends Div {
         binder = new Binder<>(ManufacturerEntity.class);
         binder.forField(name)
                 .asRequired("Name is required")
-                //TODO: make unique
-                //.withValidator(v -> manufacturerService.getAll().stream().noneMatch(m -> m.getName().equals(v)), "Name must be unique")
                 .bind(ManufacturerEntity::getName, ManufacturerEntity::setName);
 
         binder.bindInstanceFields(this);
@@ -113,7 +112,7 @@ public class ManufacturerView extends Div {
                 Notification.show("Manufacturer details stored.");
                 UI.getCurrent().navigate(ManufacturerView.class);
             } catch (Exception ex) {
-                Notification.show("An exception happened while trying to store the manufacturer details.");
+                Notification.show("Name must be unique");
             }
         });
 

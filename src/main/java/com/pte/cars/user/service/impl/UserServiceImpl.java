@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl extends CoreCRUDServiceImpl<UserEntity> implements UserService {
@@ -53,8 +54,12 @@ public class UserServiceImpl extends CoreCRUDServiceImpl<UserEntity> implements 
     }
 
     public List<UserEntity> getRoleFiltered(String filter) {
-        //TODO
-        return new ArrayList<>();
+        List<UserEntity> resultList = entityManager.createQuery("SELECT u FROM " + getManagedClass().getSimpleName() + " u JOIN u.authorities a", getManagedClass())
+                .getResultList();
+        if (!resultList.isEmpty()) {
+            resultList.removeIf(item -> !item.getAuthorities().toString().contains(filter));
+        }
+        return resultList;
     }
 
 }

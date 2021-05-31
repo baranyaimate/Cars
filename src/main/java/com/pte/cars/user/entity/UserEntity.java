@@ -92,4 +92,15 @@ public class UserEntity extends CoreEntity implements UserDetails {
     public void setLastname(String lastname) {
         this.lastname = lastname;
     }
+
+    @Override
+    public String toString() {
+        return "UserEntity{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", firstname='" + firstname + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", authorities=" + authorities +
+                '}';
+    }
 }
